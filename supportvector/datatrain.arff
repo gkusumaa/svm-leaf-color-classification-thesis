@@ -1,0 +1,54 @@
+% 
+% Dibuat oleh Gea Kusuma berdasarkan data Bpk. Frans Richard Kodong
+% Email: gheaakusumaa@gmail.com
+% [UPN Veteran Yogyakarta] Maret, 2018
+% 
+@relation data_daun
+% 
+@attribute n_red integer
+@attribute n_green integer
+@attribute n_blue integer
+@attribute Klasifikasi {Kla-1, Kla-2, Kla-3, Kla-4, Kla-5, Kla-6, Kla-7, Kla-8, Kla-9, Kla-10, Kla-11, Kla-12, Kla-13, Kla-14, Kla-15, Kla-16, Kla-17, Kla-18, Kla-19, Kla-20}
+% 
+@data
+137, 162, 83, Kla-1
+136, 161, 83, Kla-1
+134, 158, 82, Kla-2
+133, 156, 82, Kla-2
+130, 155, 82, Kla-3
+129, 154, 82, Kla-3
+126, 151, 81, Kla-4
+127, 152, 81, Kla-4
+122, 147, 80, Kla-5
+123, 148, 80, Kla-5
+117, 142, 79, Kla-6
+118, 143, 79, Kla-6
+115, 140, 79, Kla-7
+113, 138, 79, Kla-7
+112, 137, 78, Kla-8
+109, 134, 78, Kla-8
+108, 133, 77, Kla-9
+105, 131, 77, Kla-9
+104, 128, 77, Kla-10
+101, 127, 76, Kla-10
+100, 125, 76, Kla-11
+97, 123, 76, Kla-11
+96, 121, 75, Kla-12
+93, 118, 75, Kla-12
+92, 117, 74, Kla-13
+89, 115, 74, Kla-13
+87, 112, 73, Kla-14
+85, 111, 73, Kla-14
+84, 109, 73, Kla-15
+82, 107, 72, Kla-15
+80, 106, 72, Kla-16
+78, 103, 72, Kla-16
+76, 102, 71, Kla-17
+73, 99, 71, Kla-17
+72, 98, 71, Kla-18
+69, 95, 70, Kla-18
+68, 94, 70, Kla-19
+64, 91, 69, Kla-19
+64, 90, 69, Kla-20
+62, 87, 69, Kla-20
+% Data Selesai. 

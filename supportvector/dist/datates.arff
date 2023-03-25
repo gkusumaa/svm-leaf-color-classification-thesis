@@ -1,0 +1,14 @@
+% 
+% Dibuat oleh Gea Kusuma berdasarkan data Bpk. Frans Richard Kodong
+% Email: gheaakusumaa@gmail.com
+% [UPN Veteran Yogyakarta] Maret, 2018
+% 
+@relation data_daun
+% 
+@attribute n_red integer
+@attribute n_green integer
+@attribute n_blue integer
+@attribute Klasifikasi {Kla-1, Kla-2, Kla-3, Kla-4, Kla-5, Kla-6, Kla-7, Kla-8, Kla-9, Kla-10, Kla-11, Kla-12, Kla-13, Kla-14, Kla-15, Kla-16, Kla-17, Kla-18, Kla-19, Kla-20}
+% 
+@data
+133, 158, 82, ?

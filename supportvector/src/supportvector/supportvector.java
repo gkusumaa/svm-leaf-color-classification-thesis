@@ -1,0 +1,2034 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package supportvector;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
+
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.Random;
+import java.util.TimeZone;
+
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import weka.classifiers.Evaluation;
+import weka.classifiers.functions.SMO;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils;
+
+/**
+ *
+ * @author geakusuma
+ */
+public class supportvector extends javax.swing.JFrame {
+
+    /**
+     * Creates new form supportvector
+     */
+    public supportvector() {
+        initComponents();
+        this.setLocationRelativeTo(this);
+        ambil_database();
+        ActionListener aksi;
+        aksi = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DateFormat tanggal = new SimpleDateFormat("dd MMMM YYYY");
+                DateFormat waktu = new SimpleDateFormat("HH:mm:ss");
+                DateFormat waktu2 = new SimpleDateFormat("HH:mm");
+
+                java.util.Date hasil = new java.util.Date();
+                tgl_skrg = tanggal.format(hasil).toString();
+                jam_skrg = waktu.format(hasil).toString();
+                jamaja = waktu2.format(hasil).toString();
+
+                tx_tglnow.setText(tgl_skrg + " " + jam_skrg);
+                DateFormat t2 = new SimpleDateFormat("YYMMdd");
+                tgl_kode = t2.format(hasil).toString();
+
+                DateFormat tanggal2 = new SimpleDateFormat("dd");
+                DateFormat bulan = new SimpleDateFormat("MMMM");
+                DateFormat th = new SimpleDateFormat("YYYY");
+                tanggaling = tanggal2.format(hasil).toString();
+                tglUS = bulan.format(hasil).toString();
+                tahuning = th.format(hasil).toString();
+            }
+        };
+        new Timer(1000, aksi).start();
+    }
+
+    Font f_judul = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD);
+    Font f_judulIng = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.ITALIC);
+
+    Font f_tabel_judul = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+    Font f_tabel_judulIng = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.ITALIC);
+    Font f_ket = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+
+    //Font f1 = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.NORMAL);
+    Font f2 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.NORMAL);
+    Font f2b = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
+    Font f2i = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.ITALIC);
+    Font f2bi = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLDITALIC);
+    Font f4 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.NORMAL);
+    Font f5 = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL);
+
+    //detail gambar
+    String tgl_skrg, tgl_kode, jam_skrg;
+    int width, height, r, g, b, tr, tg, tb, cekr, cekg, cekb;
+    String nama, url, red, green, blue;
+    double bytes, kb;
+
+    //detail US
+    String jamaja, tglUS, Tgl_ing = null, tanggaling, tahuning;
+    String ketIng, ketInd;
+
+    //detail svm
+    String actual, predString, prediksi, terimar, terimag, terimab;
+    Evaluation eval, eval2;
+
+    Random rand = new Random();
+    int n = rand.nextInt(50) + 1;
+
+    //gambar
+    Image image;
+    ImageIcon imageIcon;
+
+    //menghitung mid
+    int rrr, ggg, bbb;
+    int tq, tw;
+    int trr = 0, tgg = 0, tbb = 0;
+    int saver = 0, saveg = 0, saveb = 0;
+
+    //menghitung rgb:4
+    int w4, h4, w44, h44;
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        lb1_gambar = new javax.swing.JLabel();
+        bt1_loadgambar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        ta1_keterangan = new javax.swing.JTextArea();
+        bt1_cetakRGB = new javax.swing.JButton();
+        bt1_cetakreprt = new javax.swing.JButton();
+        lb_nama = new javax.swing.JLabel();
+        lb_ukuran = new javax.swing.JLabel();
+        lb_waktugambar = new javax.swing.JLabel();
+        lb_lokasi = new javax.swing.JLabel();
+        lb_rataRGB = new javax.swing.JLabel();
+        lb_kla = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        tx2_red = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        tx2_green = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        tx2_blue = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        bt2_load = new javax.swing.JButton();
+        bt2_cetaklaporan = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        ta2_keterangan = new javax.swing.JTextArea();
+        bt2_new = new javax.swing.JButton();
+        lb2_kode = new javax.swing.JLabel();
+        lb2_waktu = new javax.swing.JLabel();
+        lb2_rgb = new javax.swing.JLabel();
+        lb2_kla = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        jLabel30 = new javax.swing.JLabel();
+        jLabel31 = new javax.swing.JLabel();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel35 = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        jLabel37 = new javax.swing.JLabel();
+        judul = new javax.swing.JLabel();
+        tx_tglnow = new javax.swing.JLabel();
+        jLabel38 = new javax.swing.JLabel();
+        bt1_keluar = new javax.swing.JButton();
+        jLabel40 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Klasifikasi Kesuburan Padi Berdasarkan warna Daun");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        lb1_gambar.setBackground(new java.awt.Color(102, 102, 0));
+        lb1_gambar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lb1_gambar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        bt1_loadgambar.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        bt1_loadgambar.setText("Pilih Gambar");
+        bt1_loadgambar.setBorder(null);
+        bt1_loadgambar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt1_loadgambarActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Calibri", 1, 16)); // NOI18N
+        jLabel1.setText("Keterangan Gambar");
+
+        jLabel2.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel2.setText("Nama Gambar");
+
+        jLabel3.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel3.setText("Ukuran Gambar");
+
+        jLabel4.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel4.setText("Waktu  Pengambilan Gambar");
+
+        jLabel5.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel5.setText("Lokasi Gambar");
+
+        jLabel6.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel6.setText("Rata - Rata Nilai RGB");
+
+        jLabel7.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel7.setText("Tingkat Klasifikasi");
+
+        jLabel8.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        jLabel8.setText("Keterangan");
+
+        ta1_keterangan.setColumns(20);
+        ta1_keterangan.setRows(5);
+        ta1_keterangan.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jScrollPane2.setViewportView(ta1_keterangan);
+
+        bt1_cetakRGB.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        bt1_cetakRGB.setText("Cetak Nilai RGB");
+        bt1_cetakRGB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt1_cetakRGBActionPerformed(evt);
+            }
+        });
+
+        bt1_cetakreprt.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        bt1_cetakreprt.setText("Cetak Laporan");
+        bt1_cetakreprt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt1_cetakreprtActionPerformed(evt);
+            }
+        });
+
+        lb_nama.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb_nama.setText(":");
+
+        lb_ukuran.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb_ukuran.setText(":");
+
+        lb_waktugambar.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb_waktugambar.setText(":");
+
+        lb_lokasi.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb_lokasi.setText(":");
+
+        lb_rataRGB.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb_rataRGB.setText(":");
+
+        lb_kla.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb_kla.setText(":");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(175, 175, 175)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(lb_waktugambar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(lb_nama, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(lb_lokasi, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(lb_ukuran, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel5))
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lb_kla, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lb_rataRGB, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 96, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(bt1_cetakRGB, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47)
+                .addComponent(bt1_cetakreprt, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(271, 271, 271))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(240, 240, 240)
+                        .addComponent(lb1_gambar, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(407, 407, 407)
+                        .addComponent(bt1_loadgambar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(lb1_gambar, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bt1_loadgambar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(lb_rataRGB))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(lb_kla))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(lb_nama)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lb_ukuran)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lb_waktugambar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lb_lokasi))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel5)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bt1_cetakreprt)
+                    .addComponent(bt1_cetakRGB))
+                .addGap(19, 19, 19))
+        );
+
+        jTabbedPane1.addTab("Klasifikasi Gambar", jPanel1);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel9.setText("Lengkapi Data Klasifikasi");
+
+        jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel10.setText("Nilai Merah Data (Red)");
+
+        tx2_red.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+
+        jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel11.setText("Nilai Hijau Data (Green)");
+
+        tx2_green.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+
+        jLabel12.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel12.setText("Nilai Biru Data (Blue)");
+
+        tx2_blue.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+
+        jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel13.setText("Hasil Klasifikasi Data");
+
+        bt2_load.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        bt2_load.setText("Klasifikasi Data");
+        bt2_load.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt2_loadActionPerformed(evt);
+            }
+        });
+
+        bt2_cetaklaporan.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        bt2_cetaklaporan.setText("Cetak Laporan");
+        bt2_cetaklaporan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt2_cetaklaporanActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel14.setText("Kode Data Penelitian");
+
+        jLabel15.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel15.setText("Waktu Penelitian");
+
+        jLabel16.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel16.setText("Nilai RGB Data Penelitian");
+
+        jLabel17.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel17.setText("Tingkat Klasifikasi");
+
+        jLabel18.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jLabel18.setText("Keterangan");
+
+        ta2_keterangan.setColumns(20);
+        ta2_keterangan.setRows(5);
+        jScrollPane3.setViewportView(ta2_keterangan);
+
+        bt2_new.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        bt2_new.setText("Buat Data Baru");
+        bt2_new.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt2_newActionPerformed(evt);
+            }
+        });
+
+        lb2_kode.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb2_kode.setText(":");
+
+        lb2_waktu.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb2_waktu.setText(":");
+
+        lb2_rgb.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb2_rgb.setText(":");
+
+        lb2_kla.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        lb2_kla.setText(":");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(491, 491, 491)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel17))
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lb2_kla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .addComponent(lb2_kode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lb2_waktu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lb2_rgb, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel10)
+                                            .addComponent(jLabel11)
+                                            .addComponent(jLabel12))
+                                        .addGap(77, 77, 77)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(tx2_red, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                                            .addComponent(tx2_green)
+                                            .addComponent(tx2_blue))))
+                                .addGap(75, 75, 75)
+                                .addComponent(jLabel13))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(162, 162, 162)
+                                .addComponent(bt2_new, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(64, 64, 64)
+                                .addComponent(bt2_load, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(56, 56, 56)
+                                .addComponent(bt2_cetaklaporan)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel13))
+                .addGap(33, 33, 33)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(tx2_red, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14)
+                    .addComponent(lb2_kode))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(tx2_green, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15)
+                    .addComponent(lb2_waktu))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(tx2_blue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16)
+                    .addComponent(lb2_rgb))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel17)
+                    .addComponent(lb2_kla))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(bt2_new)
+                            .addComponent(bt2_load)
+                            .addComponent(bt2_cetaklaporan))
+                        .addGap(80, 80, 80))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+
+        jTabbedPane1.addTab("Klasifikasi RGB", jPanel2);
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel19.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel19.setText("Klasifikasi Dengan Gambar");
+
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel20.setText("1. Pilih gambar yang akan diproses dengan tombol \"PILIH GAMBAR\"");
+
+        jLabel21.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel21.setText("Perlu diketahui :");
+
+        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel22.setText("a. Hasil akan sangat berpengaruh dengan kondisi gambar diambil (tingkat kecerahan)");
+
+        jLabel23.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel23.setText("b. Hindari gambar yang memiliki latar (background) yang dominan. usahakan gambar yang diambil tanpa background.");
+
+        jLabel24.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel24.setText("2. Hasil klasifikasi akan otomatis keluar pada bagian bawah gambar berserta keterangan gambar.");
+
+        jLabel25.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel25.setText("3. Terdapat 2 tombol yaitu:");
+
+        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel26.setText("a. Tombol \"CETAK NILAI RGB\" untuk proses menyimpan nilai rgb setiap gambar (perpixel). ");
+
+        jLabel27.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel27.setText("Semakin besar ukuran gambar, semakin banyak ruangan penyimpanan yang diperlukan.");
+
+        jLabel28.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel28.setText("b. Tombol \"CETAK LAPORAN\" untuk proses menyimpan hasil prediksi klasifikasi lengkap dengan keterangan gambar");
+
+        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel29.setText("Semua hasil laporan, akan disimpan pada direktori");
+
+        jLabel30.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel30.setText("D://");
+
+        jLabel31.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel31.setText("Klasifikasi Dengan Data RGB");
+
+        jLabel32.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel32.setText("1. Lengkapi data pada ruangan yang disediakan pada bagian kiri: \"Nilai Merah Data (Red)\", \"Nilai Hijau Data (Green)\", Nilai Biru Data (Blue)\"");
+
+        jLabel33.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel33.setText("2. Untuk memproses data, klik tombol \"KLASIFIKASI DATA\". Maka akan secara otomatis, hasil prediksi akan tampil pada bagian kanan.");
+
+        jLabel34.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel34.setText("3. Terdapat tombol \"CETAK LAPORAN\" pada bagian kanan bawah. Hasil laporan akan disimpan pada direktori");
+
+        jLabel35.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel35.setText("D://");
+
+        jLabel36.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        jLabel36.setText("*Pengguna hanya bisa menambahkan pada bagian \"KETERANGAN\" untuk melengkapi hasil kesimpulan awal dan pada bagian keterangan ini, akan ikut di CETAK");
+
+        jLabel37.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        jLabel37.setText("*Klasifikasi dengan gambar, dihitung berdasarkan 1/4 dari ukuran gambar (tengah gambar).");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel19)
+                            .addComponent(jLabel24)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel25)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel28)
+                                    .addComponent(jLabel26)))
+                            .addComponent(jLabel31)
+                            .addComponent(jLabel32)
+                            .addComponent(jLabel33)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel34)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel35))
+                            .addComponent(jLabel36)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel21)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel23)
+                                    .addComponent(jLabel22)))
+                            .addComponent(jLabel37)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(202, 202, 202)
+                        .addComponent(jLabel27))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(jLabel29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel30)))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(jLabel22))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel23)
+                .addGap(5, 5, 5)
+                .addComponent(jLabel24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(jLabel26))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel29)
+                    .addComponent(jLabel30))
+                .addGap(48, 48, 48)
+                .addComponent(jLabel31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel34)
+                    .addComponent(jLabel35))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addComponent(jLabel37)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel36)
+                .addGap(52, 52, 52))
+        );
+
+        jTabbedPane1.addTab("Tata Cara Penggunaan", jPanel3);
+
+        getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 910, 540));
+
+        judul.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        judul.setForeground(new java.awt.Color(255, 255, 255));
+        judul.setText("KLASIFIKASI KESUBURAN PADI BERDASARKAN WARNA DAUN");
+        getContentPane().add(judul, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
+
+        tx_tglnow.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        tx_tglnow.setForeground(new java.awt.Color(255, 255, 255));
+        tx_tglnow.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        getContentPane().add(tx_tglnow, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 175, 20));
+
+        jLabel38.setIcon(new javax.swing.ImageIcon("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\background-powerpoint-simple-dan-menarik-background-ppt-simple-menarik-2-background-check-all-ideasBAWAH.jpg")); // NOI18N
+        getContentPane().add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, -70, 800, 210));
+
+        bt1_keluar.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        bt1_keluar.setText("Keluar");
+        bt1_keluar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt1_keluarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bt1_keluar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 630, 111, -1));
+
+        jLabel40.setIcon(new javax.swing.ImageIcon("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\background-powerpoint-simple-dan-menarik-background-ppt-simple-menarik-2-background-check-all-ideasATAS.jpg")); // NOI18N
+        jLabel40.setText("jLabel40");
+        getContentPane().add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 590, 800, 70));
+
+        jLabel39.setIcon(new javax.swing.ImageIcon("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\background-powerpoint-simple-dan-menarik-background-ppt-simple-menarik-2-background-check-all-ideasATAS.jpg")); // NOI18N
+        getContentPane().add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 610, 560, 50));
+
+        jLabel41.setIcon(new javax.swing.ImageIcon("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\background-powerpoint-simple-dan-menarik-background-ppt-simple-menarik-2-background-check-all-ideasBAWAH.jpg")); // NOI18N
+        jLabel41.setText("jLabel41");
+        getContentPane().add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void bt1_cetakRGBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt1_cetakRGBActionPerformed
+        // TODO add your handling code here:
+        formatIng();
+        String name = null;
+        int counter = 0;
+        if (lb1_gambar.getIcon() == null) {
+            JOptionPane.showMessageDialog(rootPane, "Data kosong.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+//gambar terisi
+            JFrame fcetak_RGB = new JFrame("Cetak RGB");
+            name = JOptionPane.showInputDialog(fcetak_RGB, "Simpan dengan nama ..");
+
+            if (name == null) {
+                //System.out.println("NO");
+            } else if (name == null || (name != null && ("".equals(name)))) {
+                //System.out.println("doenst do it");
+                JOptionPane.showMessageDialog(rootPane, "Nama berkas masih kosong.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Document doc = new Document();
+                doc.setPageSize(PageSize.A4);
+                try {
+                    PdfWriter wr = PdfWriter.getInstance(doc, new FileOutputStream("D:\\" + name + ".pdf"));
+                    PdfPTable tab = new PdfPTable(4);
+                    tab.setWidthPercentage(100);
+                    tab.setSpacingBefore(30);
+                    tab.setSpacingAfter(30);
+                    doc.open();
+
+                    PdfPCell cell;
+                    //paragraph p untuk rata tengah utama
+                    Paragraph p = new Paragraph();
+                    p.setAlignment(Element.ALIGN_CENTER);
+                    Chunk cu = new Chunk("Nilai Warna Daun \n", f_judul);
+                    Chunk cuI = new Chunk("(Leaf Color Value)\n\n", f_judulIng);
+                    p.add(cu);
+                    p.add(cuI);
+                    doc.add(p);
+                    //paragraph p untuk rata tengah ket data
+                    Paragraph py = new Paragraph();
+                    py.setAlignment(Element.ALIGN_JUSTIFIED);
+                    Chunk cuu = new Chunk("\n\nNama Data: " + nama + "\n", f2);
+                    Chunk cuuI = new Chunk("(Data's Name: " + nama + ")\n", f2i);
+                    Chunk cuu2 = new Chunk("Lokasi Data: " + url + "\n", f2);
+                    Chunk cuu2I = new Chunk("(Location's Data: " + url + " )\n", f2i);
+                    py.add(cuu);
+                    py.add(cuuI);
+                    py.add(cuu2);
+                    py.add(cuu2I);
+                    doc.add(py);
+
+                    //bhs indonesia tabel
+                    PdfPCell b1 = new PdfPCell(new Phrase("Data Ke-", f_tabel_judul));
+                    b1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    tab.addCell(b1);
+                    PdfPCell b2 = new PdfPCell(new Phrase("Merah (Red)", f_tabel_judul));
+                    b2.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    tab.addCell(b2);
+                    PdfPCell b3 = new PdfPCell(new Phrase("Hijau (Green)", f_tabel_judul));
+                    b3.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    tab.addCell(b3);
+                    PdfPCell b4 = new PdfPCell(new Phrase("Biru (Blue)", f_tabel_judul));
+                    b4.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    tab.addCell(b4);
+
+                    BufferedImage img = null;
+                    try {
+                        img = ImageIO.read(new File(url));
+                        BufferedImage binaryImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                        for (int i = 0; i < img.getWidth(); ++i) {
+                            for (int j = 0; j < img.getHeight(); ++j) {
+                                Color c = new Color(img.getRGB((int) i, (int) j));
+                                r = c.getRed();
+                                g = c.getGreen();
+                                b = c.getBlue();
+
+                                tr += r;
+                                tg += g;
+                                tb += b;
+                                String hitung = String.valueOf(counter + 1);
+                                red = String.valueOf(r);
+                                green = String.valueOf(g);
+                                blue = String.valueOf(b);
+                                tab.addCell("[" + i + "][" + j + "]");
+                                tab.addCell(red);
+                                tab.addCell(green);
+                                tab.addCell(blue);
+                                counter++;
+                            }
+                        }
+                        tr = tr / counter;
+                        tg = tg / counter;
+                        tb = tb / counter;
+                        System.out.println(tr + " " + tg + " " + tb);
+                        System.out.println("Selesai");
+                        doc.add(tab);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(rootPane, "Ambil Nilai RGB GAGAL.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    doc.add(tab);
+
+                    //paragraph p3 untuk rata tengah bagian akhir laporan
+                    Paragraph pp = new Paragraph();
+                    pp.setAlignment(Element.ALIGN_JUSTIFIED);
+                    Chunk cuIn = new Chunk("Berdasarkan nilai tersebut, didapatkan rata-rata untuk setiap warna daun adalah "
+                            + "\nM:" + tr + ", H: " + tg + ", B:" + tb + " dengan jumlah data " + counter, f2);
+                    Chunk cuIg = new Chunk("\nBased on that value, the average for each leaf color is "
+                            + "\nR:" + tr + ", G:" + tg + ", B:" + tb + " with total amount " + counter + " data", f2i);
+                    pp.add(cuIn);
+                    pp.add(cuIg);
+                    doc.add(pp);
+
+                    Paragraph ppp = new Paragraph();
+                    ppp.setAlignment(Element.ALIGN_RIGHT);
+                    Chunk sp = new Chunk("\n\n\n: ");
+                    Chunk c = new Chunk("Diterbitkan: " + tgl_skrg, f2);
+                    Chunk c2 = new Chunk("\n(Publish: " + Tgl_ing + " " + tanggaling + ", " + tahuning + ".)", f2i);
+                    //+ "on " + Tgl_ing + " " + tanggaling + ", " + tahuning + " at " + jamaja + ".)", f2i);
+                    ppp.add(c);
+                    ppp.add(c2);
+                    doc.add(ppp);
+
+                    doc.close();
+                    JOptionPane.showMessageDialog(rootPane, "Data RGB berhasil disimpan", "Pesan Informasi", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+        try {
+            File file = new File("D:\\" + name + ".pdf");
+            if (file.toString().endsWith(".pdf")) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + file);
+            } else {
+                //For cross platform use
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(file);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_bt1_cetakRGBActionPerformed
+
+    private void bt1_loadgambarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt1_loadgambarActionPerformed
+        // TODO add your handling code here:
+        prediksi = null;
+        tx2_red.setText(null);
+        tx2_green.setText(null);
+        tx2_blue.setText(null);
+        lb2_kla.setText(":");
+        ta2_keterangan.setText(null);
+        lb2_kode.setText(":");
+        lb2_rgb.setText(":");
+        lb2_waktu.setText(":");
+
+        String trs, tgs, tbs;
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, GIF, and PNG Images", "jpg", "gif", "png");
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            try {
+                url = chooser.getSelectedFile().getAbsolutePath();
+                File file = chooser.getSelectedFile();
+                image = ImageIO.read(file);
+                imageIcon = new ImageIcon(image.getScaledInstance(lb1_gambar.getWidth(), lb1_gambar.getHeight(), Image.SCALE_SMOOTH));
+                lb1_gambar.setIcon(imageIcon);
+                nama = new File(url).getName();
+
+                width = image.getWidth(this);
+                height = image.getHeight(this);
+                DecimalFormat kbb = new DecimalFormat();
+                File fx = new File(url);
+                if (fx.exists()) {
+                    bytes = fx.length();
+                    kb = (bytes / 1024);
+                } else {
+                    JOptionPane.showMessageDialog(rootPane, "Gambar Belum Ada", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+
+                SimpleDateFormat sdtgl = new SimpleDateFormat("dd MMMM yyyy");
+                SimpleDateFormat sdjam = new SimpleDateFormat("HH:mm");
+
+                lb_nama.setText(nama);
+                lb_lokasi.setText(url);
+                lb_ukuran.setText(width + " x " + height + " (" + kbb.format(kb) + " KB)");
+                lb_waktugambar.setText(sdtgl.format(fx.lastModified()) + " " + sdjam.format(fx.lastModified()));
+                //tx1_nama.setText(nama);
+                //ta1_lokasi.setText(url);
+                //tx1_ukuran.setText(width + " x " + height + " (" + kbb.format(kb) + " KB)");
+                //tx1_wktgambar.setText(sdtgl.format(fx.lastModified()) + " " + sdjam.format(fx.lastModified()));
+
+                //rgb();
+                //nilai_mid();
+                nilai_per4();
+                trs = String.valueOf(tr);
+                tgs = String.valueOf(tg);
+                tbs = String.valueOf(tb);
+                //tx1_rataRGB.setText(trs + " x " + tgs + " x " + tbs + " (Red x Green x Blue)");
+                lb_rataRGB.setText(trs + " x " + tgs + " x " + tbs + " (Red x Green x Blue)");
+                buatarff_tesGambar();
+                hitung_svm();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_bt1_loadgambarActionPerformed
+
+    private void bt1_keluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt1_keluarActionPerformed
+        // TODO add your handling code here:
+        keluar();
+    }//GEN-LAST:event_bt1_keluarActionPerformed
+
+    private void bt2_newActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt2_newActionPerformed
+        // TODO add your handling code here:
+        tx2_red.setText(null);
+        tx2_green.setText(null);
+        tx2_blue.setText(null);
+        lb2_kla.setText(null);
+        ta2_keterangan.setText(null);
+        lb2_kode.setText(null);
+        lb2_rgb.setText(null);
+        lb2_waktu.setText(null);
+    }//GEN-LAST:event_bt2_newActionPerformed
+
+    private void bt2_loadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt2_loadActionPerformed
+        // TODO add your handling code here:
+        prediksi = null;
+        lb1_gambar.setIcon(null);
+        ta1_keterangan.setText(null);
+        lb_nama.setText(":");
+        lb_waktugambar.setText(":");
+        lb_ukuran.setText(":");
+        lb_lokasi.setText(":");
+        lb_rataRGB.setText(":");
+        lb_kla.setText(":");
+
+        terimar = tx2_red.getText();
+        terimag = tx2_green.getText();
+        terimab = tx2_blue.getText();
+
+        //jTextField1.setText(String.valueOf(n)+"aa");
+        if (terimar.equals("") || terimag.equals("") || terimab.equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Lengkapi data terlebih dahulu.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                //cek number or not
+                cekr = Integer.parseInt(terimar);
+                cekg = Integer.parseInt(terimag);
+                cekb = Integer.parseInt(terimab);
+
+                try {
+                    n = n + 1;
+                    lb2_kode.setText(tgl_kode + "_" + String.valueOf(n));
+                    lb2_waktu.setText(tgl_skrg);
+                    lb2_rgb.setText(terimar + " x " + terimag + " x " + terimab + " (R x G x B)");
+
+                    //PrintWriter writertes = new PrintWriter("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datates.arff");
+                    PrintWriter writertes = new PrintWriter("datates.arff");
+                    writertes.println("% ");
+                    writertes.println("% Dibuat oleh Gea Kusuma berdasarkan data Bpk. Frans Richard Kodong");
+                    writertes.println("% Email: gheaakusumaa@gmail.com");
+                    writertes.println("% [UPN Veteran Yogyakarta] Maret, 2018");
+                    writertes.println("% ");
+                    writertes.println("@relation data_daun");
+                    writertes.println("% ");
+                    writertes.println("@attribute n_red integer");
+                    writertes.println("@attribute n_green integer");
+                    writertes.println("@attribute n_blue integer");
+                    writertes.println("@attribute Klasifikasi {Kla-1, Kla-2, Kla-3, Kla-4, Kla-5, Kla-6, Kla-7, Kla-8, Kla-9, Kla-10, Kla-11, Kla-12, Kla-13, Kla-14, Kla-15, Kla-16, Kla-17, Kla-18, Kla-19, Kla-20}");
+                    writertes.println("% ");
+                    writertes.println("@data");
+                    writertes.println("" + terimar + ", " + terimag + ", " + terimab + ", ?");
+
+                    writertes.close();
+                    hitung_svm();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, "Mohon masukan angka.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
+    }//GEN-LAST:event_bt2_loadActionPerformed
+
+    private void bt2_cetaklaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt2_cetaklaporanActionPerformed
+        // TODO add your handling code here:
+        JFrame fcetak_RGB = new JFrame("Cetak RGB");
+        String name = JOptionPane.showInputDialog(fcetak_RGB, "Simpan dengan nama ..");
+        if (name == null || (name != null && ("".equals(name)))) {
+            //System.out.println("dont");
+            JOptionPane.showMessageDialog(rootPane, "Nama berkas masih kosong.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String re = tx2_red.getText();
+            String gr = tx2_green.getText();
+            String bl = tx2_blue.getText();
+
+            Document doc = new Document();
+
+            try {
+                PdfWriter wr = PdfWriter.getInstance(doc, new FileOutputStream("D:\\" + name + ".pdf"));
+                PdfPTable tab = new PdfPTable(5);
+                doc.open();
+                PdfPCell cell;
+                doc.setPageSize(PageSize.A4);
+
+                tab.setWidthPercentage(100);
+                tab.setSpacingBefore(30);
+                tab.setSpacingAfter(30);
+
+                //paragraph p untuk rata tengah
+                Paragraph p = new Paragraph();
+                p.setAlignment(Element.ALIGN_CENTER);
+                Chunk cu = new Chunk("Laporan Hasil Penelitian\n", f_judul);
+                Chunk cuI = new Chunk("(Report of research results)", f_judulIng);
+                p.add(cu);
+                p.add(cuI);
+                //paragraph p2 untuk posisi kanan kiri
+                Paragraph p2 = new Paragraph();
+                p2.setAlignment(Element.ALIGN_JUSTIFIED);
+                Chunk sp = new Chunk("\n\n\n");
+                Chunk cu2 = new Chunk("Data Penelitian Berdasarkan Nilai Warna Daun\n", f2b);
+                Chunk cu2I = new Chunk("(Research Data Based on Leaf Color Value)", f2i);
+                Chunk sp2 = new Chunk("\n\n\n");
+                Chunk cu3 = new Chunk("Berikut adalah laporan berdasarkan hasil "
+                        + "penelitian yang dilakukan pada tanggal " + tgl_skrg + " pada "
+                        + "pukul " + jamaja + ".", f2);
+                Chunk cu3I = new Chunk("\n(The following is a report based on the results of a study conducted "
+                        + "on " + Tgl_ing + " " + tanggaling + ", " + tahuning + " at " + jamaja + ".)", f2i);
+
+                //nama file
+                cell = new PdfPCell(new Phrase("Kode Data", f2));
+                cell.setColspan(2);
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                DecimalFormat kbb = new DecimalFormat();
+                cell = new PdfPCell(new Phrase("" +lb2_kode.getText(), f2));
+                cell.setColspan(3);
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("(Data's Code)", f2i));
+                cell.setColspan(5);
+                cell.setBorder(Rectangle.BOTTOM);
+                tab.addCell(cell);
+
+                //lokasi file
+                cell = new PdfPCell(new Phrase("Lokasi Penyimpanan Data", f2));
+                cell.setColspan(2);
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("Tanpa Lokasi", f2));
+                cell.setColspan(3);
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("(Location's Data)", f2i));
+                cell.setColspan(5);
+                cell.setBorder(Rectangle.BOTTOM);
+                tab.addCell(cell);
+
+                //rata2 rgb
+                cell = new PdfPCell(new Phrase("Nilai Rata-Rata Warna", f2));
+                cell.setColspan(2);
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("Merah: " + re, f2));
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("Hijau: " + gr, f2));
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("Biru: " + bl, f2));
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("(The Average value of Color)", f2i));
+                cell.setColspan(2);
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("(Red: " + re + ")", f2i));
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("(Green: " + gr + ")", f2i));
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+                cell = new PdfPCell(new Phrase("(Blue: " + blue + ")", f2i));
+                cell.setBorder(Rectangle.NO_BORDER);
+                tab.addCell(cell);
+
+                p2.add(sp);
+                p2.add(cu2);
+                p2.add(cu2I);
+                p2.add(sp2);
+                p2.add(cu3);
+                p2.add(cu3I);
+                doc.add(p);
+                doc.add(p2);
+                doc.add(tab);
+
+                //paragraph p3 untuk rata tengah bagian akhir laporan
+                Paragraph p3 = new Paragraph();
+                p3.setAlignment(Element.ALIGN_JUSTIFIED);
+                Chunk cu4 = new Chunk("Berdasarkan data tersebut maka dinyatakan sebagai"
+                        + " data dengan tingkat ", f2);
+                Chunk cu5 = new Chunk(predString, f2b);
+                Chunk cu6 = new Chunk("\n" + ta2_keterangan.getText(), f2);
+                Chunk tambahan = new Chunk("\n(Without english translation)\n", f2i);
+                p3.add(cu4);
+                p3.add(cu5);
+                p3.add(cu6);
+                p3.add(tambahan);
+                doc.add(p3);
+
+                /*
+                doc.add(new Paragraph("Laporan Hasil Klasifikasi Data", f2));
+                doc.add(new Paragraph("\n\n\n"));
+                doc.add(new Paragraph("Keterangan Data Penelitian", f2b));
+                //tx2_Hkode.setText(tgl_kode+"_"+String.valueOf(n));
+                doc.add(new Paragraph("Kode Data Penelitian : " + tgl_kode + "_" + String.valueOf(n), f4));
+                doc.add(new Paragraph("Rata - Rata RGB \t: " + re + " x " + gr + " x " + bl + " (R x G x B)", f4));
+
+                doc.add(new Paragraph("\n"));
+                //doc.add(new Paragraph("Prediksi Klasifikasi : " + predString, f4));
+                // hitung_svm2();
+                doc.add(new Paragraph("Keterangan :", f4));
+                doc.add(new Paragraph(keterangan2, f4));
+                doc.add(new Paragraph("\n\n\n"));
+
+                doc.add(new Paragraph("Dicetak pada " + tgl_skrg, f_ket));
+                 */
+                doc.close();
+                JOptionPane.showMessageDialog(rootPane, "Laporan Tersimpan.", "Pesan Informasi", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        try {
+            File file = new File("D:\\" + name + ".pdf");
+            if (file.toString().endsWith(".pdf")) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + file);
+            } else {
+                //For cross platform use
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(file);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_bt2_cetaklaporanActionPerformed
+
+    private void bt1_cetakreprtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt1_cetakreprtActionPerformed
+        // TODO add your handling code here:
+        formatIng();
+        String name = null;
+        if (lb1_gambar.getIcon() == null) {
+            JOptionPane.showMessageDialog(rootPane, "Data kosong.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        } else {
+            //gambar terisi        
+            JFrame fcetak_RGB = new JFrame("Cetak RGB");
+            name = JOptionPane.showInputDialog(fcetak_RGB, "Simpan dengan nama ..");
+            if (name == null) {
+                //System.out.println("NO");      
+            } else if (name == null || (name != null && ("".equals(name)))) {
+                JOptionPane.showMessageDialog(rootPane, "Nama berkas masih kosong.", "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+            } else {
+                //ImageIcon tg= lb1_gambar.getIcon();
+                //String tn = tx1_nama.getText();
+                //String tl = ta1_lokasi.getText();
+                String tn = lb_nama.getText();
+                String tl = lb_lokasi.getText();
+                Document doc = new Document();
+
+                try {
+                    PdfWriter wr = PdfWriter.getInstance(doc, new FileOutputStream("D:\\" + name + ".pdf"));
+                    PdfPTable tab = new PdfPTable(5);
+                    doc.open();
+                    PdfPCell cell;
+                    doc.setPageSize(PageSize.A4);
+
+                    tab.setWidthPercentage(100);
+                    tab.setSpacingBefore(30);
+                    tab.setSpacingAfter(30);
+
+                    //paragraph p untuk rata tengah
+                    Paragraph p = new Paragraph();
+                    p.setAlignment(Element.ALIGN_CENTER);
+                    Chunk cu = new Chunk("Laporan Hasil Penelitian\n", f_judul);
+                    Chunk cuI = new Chunk("(Report of research results)", f_judulIng);
+                    p.add(cu);
+                    p.add(cuI);
+                    //paragraph p2 untuk posisi kanan kiri
+                    Paragraph p2 = new Paragraph();
+                    p2.setAlignment(Element.ALIGN_JUSTIFIED);
+                    Chunk sp = new Chunk("\n\n\n");
+                    Chunk cu2 = new Chunk("Data Penelitian Berdasarkan Gambar\n", f2b);
+                    Chunk cu2I = new Chunk("(Research Data Based on Picture)", f2i);
+                    Chunk sp2 = new Chunk("\n\n\n");
+                    Chunk cu3 = new Chunk("Berikut adalah laporan berdasarkan hasil "
+                            + "penelitian yang dilakukan pada tanggal " + tgl_skrg + " pada "
+                            + "pukul " + jamaja + ".", f2);
+                    Chunk cu3I = new Chunk("\n(The following is a report based on the results of a study conducted "
+                            + "on " + Tgl_ing + " " + tanggaling + ", " + tahuning + " at " + jamaja + ".)", f2i);
+
+                    //nama file
+                    cell = new PdfPCell(new Phrase("Nama Data", f2));
+                    cell.setColspan(2);
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    DecimalFormat kbb = new DecimalFormat();
+                    cell = new PdfPCell(new Phrase("" + tn + " (" + kbb.format(kb) + " kb)", f2));
+                    cell.setColspan(3);
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("(Data's Name)", f2i));
+                    cell.setColspan(5);
+                    cell.setBorder(Rectangle.BOTTOM);
+                    tab.addCell(cell);
+
+                    //lokasi file
+                    cell = new PdfPCell(new Phrase("Lokasi Penyimpanan Data", f2));
+                    cell.setColspan(2);
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase(tl, f2));
+                    cell.setColspan(3);
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("(Location's Data)", f2i));
+                    cell.setColspan(5);
+                    cell.setBorder(Rectangle.BOTTOM);
+                    tab.addCell(cell);
+
+                    //rata2 rgb
+                    cell = new PdfPCell(new Phrase("Nilai Rata-Rata Warna", f2));
+                    cell.setColspan(2);
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("Merah: " + tr, f2));
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("Hijau: " + tg, f2));
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("Biru: " + tb, f2));
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("(The Average value of Color)", f2i));
+                    cell.setColspan(2);
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("(Red: " + tr + ")", f2i));
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("(Green: " + tg + ")", f2i));
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+                    cell = new PdfPCell(new Phrase("(Blue: " + tb + ")", f2i));
+                    cell.setBorder(Rectangle.NO_BORDER);
+                    tab.addCell(cell);
+
+                    p2.add(sp);
+                    p2.add(cu2);
+                    p2.add(cu2I);
+                    p2.add(sp2);
+                    p2.add(cu3);
+                    p2.add(cu3I);
+                    doc.add(p);
+                    doc.add(p2);
+                    doc.add(tab);
+
+                    //paragraph p3 untuk rata tengah bagian akhir laporan
+                    Paragraph p3 = new Paragraph();
+                    p3.setAlignment(Element.ALIGN_JUSTIFIED);
+                    Chunk cu4 = new Chunk("Berdasarkan data tersebut maka dinyatakan sebagai"
+                            + " data dengan tingkat ", f2);
+                    Chunk cu5 = new Chunk(predString, f2b);
+                    Chunk cu6 = new Chunk("\n" + ta1_keterangan.getText(), f2);
+                    Chunk tambahan = new Chunk("\n(Without english translation)\n", f2i);
+                    p3.add(cu4);
+                    p3.add(cu5);
+                    p3.add(cu6);
+                    p3.add(tambahan);
+                    doc.add(p3);
+
+                    //paragraph p4 untuk rata tengah bagian akhir laporan BAHASA INGGRIS
+                    /*
+                    Paragraph p4 = new Paragraph();
+                    p4.setAlignment(Element.ALIGN_JUSTIFIED);
+                    Chunk cu8 = new Chunk("(Based on the data then expressed as"
+                            + " data with level ", f2i);
+                    Chunk cu9 = new Chunk(predString, f2bi);
+                    Chunk cu10 = new Chunk(" or " + ketIng + ")", f2i);
+                    p4.add(cu8);
+                    p4.add(cu9);
+                    p4.add(cu10);
+                    doc.add(p4);
+                     */
+                    doc.close();
+                    JOptionPane.showMessageDialog(rootPane, "Laporan Tersimpan.", "Pesan Informasi", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        }
+        try {
+            File file = new File("D:\\" + name + ".pdf");
+            if (file.toString().endsWith(".pdf")) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + file);
+            } else {
+                //For cross platform use
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(file);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_bt1_cetakreprtActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(supportvector.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(supportvector.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(supportvector.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(supportvector.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new supportvector().setVisible(true);
+
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt1_cetakRGB;
+    private javax.swing.JButton bt1_cetakreprt;
+    private javax.swing.JButton bt1_keluar;
+    private javax.swing.JButton bt1_loadgambar;
+    private javax.swing.JButton bt2_cetaklaporan;
+    private javax.swing.JButton bt2_load;
+    private javax.swing.JButton bt2_new;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel judul;
+    private javax.swing.JLabel lb1_gambar;
+    private javax.swing.JLabel lb2_kla;
+    private javax.swing.JLabel lb2_kode;
+    private javax.swing.JLabel lb2_rgb;
+    private javax.swing.JLabel lb2_waktu;
+    private javax.swing.JLabel lb_kla;
+    private javax.swing.JLabel lb_lokasi;
+    private javax.swing.JLabel lb_nama;
+    private javax.swing.JLabel lb_rataRGB;
+    private javax.swing.JLabel lb_ukuran;
+    private javax.swing.JLabel lb_waktugambar;
+    private javax.swing.JTextArea ta1_keterangan;
+    private javax.swing.JTextArea ta2_keterangan;
+    private javax.swing.JTextField tx2_blue;
+    private javax.swing.JTextField tx2_green;
+    private javax.swing.JTextField tx2_red;
+    private javax.swing.JLabel tx_tglnow;
+    // End of variables declaration//GEN-END:variables
+
+    public void keluar() {
+        int rep = JOptionPane.showConfirmDialog(rootPane, "Apakah anda yakin akan keluar ?", "Pesan Informasi.", JOptionPane.YES_NO_OPTION);
+        if (rep == JOptionPane.YES_NO_OPTION) {
+            dispose();
+        }
+    }
+
+    public void rgb() {
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File(url));
+            BufferedImage binaryImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            int counter = 0;
+            for (int i = 0; i < img.getWidth(); ++i) {
+                for (int j = 0; j < img.getHeight(); ++j) {
+                    Color c = new Color(img.getRGB((int) i, (int) j));
+                    r = c.getRed();
+                    g = c.getGreen();
+                    b = c.getBlue();
+
+                    tr += r;
+                    tg += g;
+                    tb += b;
+                    counter++;
+                }
+            }
+            tr = tr / counter;
+            tg = tg / counter;
+            tb = tb / counter;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void hitung_svm() {
+        actual = null;
+        predString = null;
+        try {
+            //ConverterUtils.DataSource source = new ConverterUtils.DataSource("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datatrain.arff");
+            ConverterUtils.DataSource source = new ConverterUtils.DataSource("datatrain.arff");
+            Instances traindata = source.getDataSet();
+            traindata.setClassIndex(traindata.numAttributes() - 1);
+
+            SMO svm = new SMO();
+            svm.buildClassifier(traindata);
+
+            eval = new Evaluation(traindata);
+
+            //ConverterUtils.DataSource source1 = new ConverterUtils.DataSource("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datates.arff");
+            ConverterUtils.DataSource source1 = new ConverterUtils.DataSource("datates.arff");
+            Instances tesdata = source1.getDataSet();
+
+            tesdata.setClassIndex(tesdata.numAttributes() - 1);
+            eval.evaluateModel(svm, tesdata);
+
+            for (int i = 0; i < tesdata.numInstances(); i++) {
+                double actualclass = tesdata.instance(i).classValue();
+                actual = tesdata.classAttribute().value((int) actualclass);
+
+                Instance newInst = tesdata.instance(i);
+
+                double predSM = svm.classifyInstance(newInst);
+                predString = tesdata.classAttribute().value((int) predSM);
+
+                //if (tx1_nama.getText().equals("")) {
+                //if (lb_nama.getText().equals("")) {
+                if (lb1_gambar.getIcon() == null) {
+                    //ketika tab 2 terisi
+                    lb2_kla.setText(predString);
+                    keterangan2();
+                } else {
+                    //ketika tab 1 terisi
+                    //tx1_tingkatKLA.setText(predString);
+                    lb_kla.setText(predString);
+                    keterangan();
+                }
+                prediksi = predString;
+                cetak_pred();
+            }
+            System.out.println("DONE Klasifikasi RGB.");
+
+            System.out.println(eval.toSummaryString());
+        } catch (Exception e) {
+            System.out.println("Klasifikasi RGB error: " + e.getMessage());
+            JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void hitung_svm2() {
+        try {
+            //ConverterUtils.DataSource source = new ConverterUtils.DataSource("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datatrain.arff");
+            ConverterUtils.DataSource source = new ConverterUtils.DataSource("datatrain.arff");
+            Instances traindata = source.getDataSet();
+            traindata.setClassIndex(traindata.numAttributes() - 1);
+
+            SMO svm = new SMO();
+            svm.buildClassifier(traindata);
+
+            eval2 = new Evaluation(traindata);
+
+            //ConverterUtils.DataSource source1 = new ConverterUtils.DataSource("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datates2.arff");
+            ConverterUtils.DataSource source1 = new ConverterUtils.DataSource("datates2.arff");
+            Instances tesdata = source1.getDataSet();
+
+            tesdata.setClassIndex(tesdata.numAttributes() - 1);
+            eval2.evaluateModel(svm, tesdata);
+            svm.buildClassifier(tesdata);
+
+            System.out.println("===========================");
+            System.out.println("Actual class, SMO Predicted");
+            for (int i = 0; i < tesdata.numInstances(); i++) {
+                double actualclass = tesdata.instance(i).classValue();
+                actual = tesdata.classAttribute().value((int) actualclass);
+
+                Instance newInst = tesdata.instance(i);
+
+                double predSM = svm.classifyInstance(newInst);
+                predString = tesdata.classAttribute().value((int) predSM);
+            }
+            System.out.println("DONE Klasifikasi RGB 2.");
+            //System.out.println(eval2.toSummaryString());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "" + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void ambil_database() {
+        try {
+            //ambil data train dari database
+            //PrintWriter writer = new PrintWriter("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datatrain.arff");
+            PrintWriter writer = new PrintWriter("datatrain.arff");
+
+            Class.forName("org.gjt.mm.mysql.Driver");
+            Connection koneksi = DriverManager.getConnection("jdbc:mysql://localhost/daun", "root", "");
+            Statement stmt = koneksi.createStatement();
+            String query = "select red, green, blue, klasifikasi from rgb_daun;";
+            ResultSet rs = stmt.executeQuery(query);
+
+            writer.println("% ");
+            writer.println("% Dibuat oleh Gea Kusuma berdasarkan data Bpk. Frans Richard Kodong");
+            writer.println("% Email: gheaakusumaa@gmail.com");
+            writer.println("% [UPN Veteran Yogyakarta] Maret, 2018");
+            writer.println("% ");
+            writer.println("@relation data_daun");
+            writer.println("% ");
+            writer.println("@attribute n_red integer");
+            writer.println("@attribute n_green integer");
+            writer.println("@attribute n_blue integer");
+            writer.println("@attribute Klasifikasi {Kla-1, Kla-2, Kla-3, Kla-4, Kla-5, Kla-6, Kla-7, Kla-8, Kla-9, Kla-10, Kla-11, Kla-12, Kla-13, Kla-14, Kla-15, Kla-16, Kla-17, Kla-18, Kla-19, Kla-20}");
+            writer.println("% ");
+            writer.println("@data");
+            while (rs.next()) {
+                writer.println("" + rs.getString("red") + ", " + rs.getString("green") + ", " + rs.getString("blue") + ", " + rs.getString("klasifikasi"));
+            }
+            writer.println("% Data Selesai. ");
+
+            writer.close();
+            stmt.close();
+            koneksi.close();
+            System.out.println("Done data train database");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "Pengambilan data train dari database Gagal. RGB: " + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void buatarff_tesGambar() {
+        terimar = String.valueOf(tr);
+        terimag = String.valueOf(tg);
+        terimab = String.valueOf(tb);
+        try {
+            //PrintWriter writertes = new PrintWriter("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datates.arff");
+            PrintWriter writertes = new PrintWriter("datates.arff");
+            writertes.println("% ");
+            writertes.println("% Dibuat oleh Gea Kusuma berdasarkan data Bpk. Frans Richard Kodong");
+            writertes.println("% Email: gheaakusumaa@gmail.com");
+            writertes.println("% [UPN Veteran Yogyakarta] Maret, 2018");
+            writertes.println("% ");
+            writertes.println("@relation data_daun");
+            writertes.println("% ");
+            writertes.println("@attribute n_red integer");
+            writertes.println("@attribute n_green integer");
+            writertes.println("@attribute n_blue integer");
+            writertes.println("@attribute Klasifikasi {Kla-1, Kla-2, Kla-3, Kla-4, Kla-5, Kla-6, Kla-7, Kla-8, Kla-9, Kla-10, Kla-11, Kla-12, Kla-13, Kla-14, Kla-15, Kla-16, Kla-17, Kla-18, Kla-19, Kla-20}");
+            writertes.println("% ");
+            writertes.println("@data");
+            writertes.println("" + terimar + ", " + terimag + ", " + terimab + ", ?");
+
+            writertes.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "Kesalahan cetak data testing.\n " + e.getMessage(), "Pesan Kesalahan", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void keterangan() {
+        ketIng = null;
+        ketInd = null;
+        if (lb_kla.getText().equals("") || lb_kla.getText().equals("")) {
+            ta1_keterangan.setText("Prediksi tidak ada");
+            ketInd = "Prediksi tidak ada";
+            ketIng = "Prediction does not exist";
+        } else if (lb_kla.getText().equals("Kla-1")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 1.\nKandungan pupuk nitrogen 10%, perlu ditambahkan 90% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 1. Kandungan pupuk nitrogen 10%, perlu ditambahkan 90% pupuk nitrogen";
+            ketIng = "Classification of 1st level. The content of nitrogen fertilizer is 10%, and need to be added 90% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-2")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 2.\nKandungan pupuk nitrogen 20%, perlu ditambahkan 80% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 2. Kandungan pupuk nitrogen 20%, perlu ditambahkan 80% pupuk nitrogen";
+            ketIng = "Classification of 2nd level. The content of nitrogen fertilizer is 20%, and need to be added 80% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-3")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 3.\nKandungan pupuk nitrogen 30%, perlu ditambahkan 70% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 3. Kandungan pupuk nitrogen 30%, perlu ditambahkan 70% pupuk nitrogen";
+            ketIng = "Classification of 3rd level. The content of nitrogen fertilizer is 30%, and need to be added 70% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-4")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 4.\nKandungan pupuk nitrogen 40%, perlu ditambahkan 60% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 4. Kandungan pupuk nitrogen 40%, perlu ditambahkan 60% pupuk nitrogen";
+            ketIng = "Classification of 4th level. The content of nitrogen fertilizer is 40%, and need to be added 60% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-5")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 5.\nKandungan pupuk nitrogen 50%, perlu ditambahkan 50% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 5. Kandungan pupuk nitrogen 50%, perlu ditambahkan 50% pupuk nitrogen";
+            ketIng = "Classification of 5th level. The content of nitrogen fertilizer is 50%, and need to be added 50% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-6")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 6.\nKandungan pupuk nitrogen 60%, perlu ditambahkan 40% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 6.Kandungan pupuk nitrogen 60%, perlu ditambahkan 40% pupuk nitrogen";
+            ketIng = "Classification of 6th level. The content of nitrogen fertilizer is 60%, and need to be added 40% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-7")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 7.\nKandungan pupuk nitrogen 70%, perlu ditambahkan 30% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 7. Kandungan pupuk nitrogen 70%, perlu ditambahkan 30% pupuk nitrogen";
+            ketIng = "Classification of 7th level. The content of nitrogen fertilizer is 70%, and need to be added 30% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-8")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 8.\nKandungan pupuk nitrogen 80%, perlu ditambahkan 20% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 8. Kandungan pupuk nitrogen 80%, perlu ditambahkan 20% pupuk nitrogen";
+            ketIng = "Classification of 8th level. The content of nitrogen fertilizer is 80%, and need to be added 20% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-9")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 9.\nKandungan pupuk nitrogen 90%, perlu ditambahkan 10% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 9. Kandungan pupuk nitrogen 90%, perlu ditambahkan 10% pupuk nitrogen";
+            ketIng = "Classification of 9th level. The content of nitrogen fertilizer is 90%, and need to be added 10% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-10")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 10.\nKandungan pupuk nitrogen 100%, dan tidak perlu ditambahkan");
+            ketInd = "Klasifikasi tingkat 10. Kandungan pupuk nitrogen 100%, dan tidak perlu ditambahkan";
+            ketIng = "Classification of 10th level. The content of nitrogen fertilizer is 100%, and don't need to be added.";
+        } else if (lb_kla.getText().equals("Kla-11")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 11.\nKandungan pupuk nitrogen 110%, perlu dikurangi 10% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 11. Kandungan pupuk nitrogen 110%, perlu dikurangi 10% pupuk nitrogen";
+            ketIng = "Classification of 11st level. The content of nitrogen fertilizer is 110%, and need to be reduced 10% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-12")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 12.\nKandungan pupuk nitrogen 120%, perlu dikurangi 20% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 12. Kandungan pupuk nitrogen 120%, perlu dikurangi 20% pupuk nitrogen";
+            ketIng = "Classification of 12nd level. The content of nitrogen fertilizer is 120%, and need to be reduced 20% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-13")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 13.\nKandungan pupuk nitrogen 130%, perlu dikurangi 30% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 13. Kandungan pupuk nitrogen 130%, perlu dikurangi 30% pupuk nitrogen";
+            ketIng = "Classification of 13rd level. The content of nitrogen fertilizer is 130%, and need to be reduced 30% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-14")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 14.\nKandungan pupuk nitrogen 140%, perlu dikurangi 40% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 14. Kandungan pupuk nitrogen 140%, perlu dikurangi 40% pupuk nitrogen";
+            ketIng = "Classification of 14th level. The content of nitrogen fertilizer is 140%, and need to be reduced 40% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-15")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 15.\nKandungan pupuk nitrogen 150%, perlu dikurangi 50% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 15. Kandungan pupuk nitrogen 150%, perlu dikurangi 50% pupuk nitrogen";
+            ketIng = "Classification of 15th level. The content of nitrogen fertilizer is 150%, and need to be reduced 50% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-16")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 16.\nKandungan pupuk nitrogen 160%, perlu dikurangi 60% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 16. Kandungan pupuk nitrogen 160%, perlu dikurangi 60% pupuk nitrogen";
+            ketIng = "Classification of 16th level. The content of nitrogen fertilizer is 160%, and need to be reduced 60% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-17")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 17.\nKandungan pupuk nitrogen 170%, perlu dikurangi 70% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 17. Kandungan pupuk nitrogen 170%, perlu dikurangi 70% pupuk nitrogen";
+            ketIng = "Classification of 17th level. The content of nitrogen fertilizer is 170%, and need to be reduced 70% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-18")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 18.\nKandungan pupuk nitrogen 180%, perlu dikurangi 80% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 18. Kandungan pupuk nitrogen 180%, perlu dikurangi 80% pupuk nitrogen";
+            ketIng = "Classification of 18th level. The content of nitrogen fertilizer is 180%, and need to be reduced 80% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-19")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 19.\nKandungan pupuk nitrogen 190%, perlu dikurangi 90% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 19. Kandungan pupuk nitrogen 190%, perlu dikurangi 90% pupuk nitrogen";
+            ketIng = "Classification of 19th level. The content of nitrogen fertilizer is 190%, and need to be reduced 90% of nitrogen fertilizer";
+        } else if (lb_kla.getText().equals("Kla-20")) {
+            ta1_keterangan.setText("Klasifikasi tingkat 20.\nKandungan pupuk nitrogen 200%, perlu dikurangi 100% pupuk nitrogen");
+            ketInd = "Klasifikasi tingkat 20. Kandungan pupuk nitrogen 200%, perlu dikurangi 100% pupuk nitrogen";
+            ketIng = "Classification of 20th level. The content of nitrogen fertilizer is 200%, and need to be reduced 100% of nitrogen fertilizer";
+        } else {
+            ta1_keterangan.setText("Terjadi Kesalahan Klasifikasi 1");
+            ketInd = "";
+            ketIng = "";
+        }
+    }
+
+    public void kosong() {
+        //tab 1
+
+        ta1_keterangan.setText(null);
+        //tab 2
+        tx2_red.setText(null);
+        tx2_green.setText(null);
+        tx2_blue.setText(null);
+        lb2_kla.setText(null);
+        ta2_keterangan.setText(null);
+        lb2_kode.setText(null);
+        lb2_rgb.setText(null);
+        lb2_waktu.setText(null);
+    }
+
+    public void keterangan2() {
+        ketInd = null;
+        ketIng = null;
+        if (lb2_kla.getText().equals("") || lb2_kla.getText().equals("")) {
+            ta2_keterangan.setText("Prediksi tidak ada");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-1")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 1.\nKandungan pupuk nitrogen 10%, perlu ditambahkan 90% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-2")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 2.\nKandungan pupuk nitrogen 20%, perlu ditambahkan 80% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-3")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 3.\nKandungan pupuk nitrogen 30%, perlu ditambahkan 70% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-4")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 4.\nKandungan pupuk nitrogen 40%, perlu ditambahkan 60% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-5")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 5.\nKandungan pupuk nitrogen 50%, perlu ditambahkan 50% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-6")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 6.\nKandungan pupuk nitrogen 60%, perlu ditambahkan 40% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-7")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 7.\nKandungan pupuk nitrogen 70%, perlu ditambahkan 30% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-8")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 8.\nKandungan pupuk nitrogen 80%, perlu ditambahkan 20% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-9")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 9.\nKandungan pupuk nitrogen 90%, perlu ditambahkan 10% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-10")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 10.\nKandungan pupuk nitrogen 100%, dan tidak perlu ditambahkan");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-11")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 11.\nKandungan pupuk nitrogen 110%, perlu dikurangi 10% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-12")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 12.\nKandungan pupuk nitrogen 120%, perlu dikurangi 20% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-13")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 13.\nKandungan pupuk nitrogen 130%, perlu dikurangi 30% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-14")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 14.\nKandungan pupuk nitrogen 140%, perlu dikurangi 40% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-15")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 15.\nKandungan pupuk nitrogen 150%, perlu dikurangi 50% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-16")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 16.\nKandungan pupuk nitrogen 160%, perlu dikurangi 60% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-17")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 17.\nKandungan pupuk nitrogen 170%, perlu dikurangi 70% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-18")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 18.\nKandungan pupuk nitrogen 180%, perlu dikurangi 80% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-19")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 19.\nKandungan pupuk nitrogen 190%, perlu dikurangi 90% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else if (lb2_kla.getText().equals("Kla-20")) {
+            ta2_keterangan.setText("Klasifikasi tingkat 20.\nKandungan pupuk nitrogen 200%, perlu dikurangi 100% pupuk nitrogen");
+            ketInd = "";
+            ketIng = "";
+        } else {
+            ta2_keterangan.setText("Terjadi Kesalahan Klasifikasi 2");
+        }
+    }
+
+    public void cetak_pred() {
+        //datates2 : data tes untuk cetak kla- dan hitung pred.
+        try {
+            //PrintWriter writertes = new PrintWriter("C:\\Users\\Samsung\\Documents\\NetBeansProjects\\supportvector\\src\\supportvector\\datates2.arff");
+            PrintWriter writertes = new PrintWriter("datates2.arff");
+            writertes.println("% ");
+            writertes.println("% Dibuat oleh Gea Kusuma berdasarkan data Bpk. Frans Richard Kodong");
+            writertes.println("% Email: gheaakusumaa@gmail.com");
+            writertes.println("% [UPN Veteran Yogyakarta] Maret, 2018");
+            writertes.println("% ");
+            writertes.println("@relation data_daun");
+            writertes.println("% ");
+            writertes.println("@attribute n_red integer");
+            writertes.println("@attribute n_green integer");
+            writertes.println("@attribute n_blue integer");
+            writertes.println("@attribute Klasifikasi {Kla-1, Kla-2, Kla-3, Kla-4, Kla-5, Kla-6, Kla-7, Kla-8, Kla-9, Kla-10, Kla-11, Kla-12, Kla-13, Kla-14, Kla-15, Kla-16, Kla-17, Kla-18, Kla-19, Kla-20}");
+            writertes.println("% ");
+            writertes.println("@data");
+            writertes.println("" + terimar + ", " + terimag + ", " + terimab + ", " + prediksi);
+
+            writertes.close();
+        } catch (Exception e) {
+        }
+    }
+
+    public void nilai_mid() {
+        int q, w;
+
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File(url));
+            BufferedImage binaryImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            int counter = 0;
+
+            q = img.getWidth();
+            w = img.getHeight();
+            tq = q / 2;
+            tw = w / 2;
+            for (int i = 0; i < img.getWidth(); ++i) {
+                for (int j = 0; j < img.getHeight(); ++j) {
+                    Color c = new Color(img.getRGB((int) i, (int) j));
+                    rrr = c.getRed();
+                    ggg = c.getGreen();
+                    bbb = c.getBlue();
+
+                    trr += rrr;
+                    tgg += ggg;
+                    tbb += bbb;
+                    counter++;
+
+                    Color xx = new Color(img.getRGB(tq, tw));
+                    saver = xx.getRed();
+                    saveg = xx.getGreen();
+                    saveb = xx.getBlue();
+                }
+            }
+
+            trr = trr / counter;
+            tgg = tgg / counter;
+            tbb = tbb / counter;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void nilai_per4() {
+        BufferedImage img = null;
+
+        w4 = 0;
+        h4 = 0;
+        w44 = 0;
+        h44 = 0;
+
+        try {
+            img = ImageIO.read(new File(url));
+            //BufferedImage binaryImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            int counter = 0;
+            w4 = img.getWidth() / 4;
+            h4 = img.getHeight() / 4;
+            w44 = w4 * 3;
+            h44 = h4 * 3;
+            //int array[][] = new int[w44][h44];
+            for (int i = w4; i <= w44; ++i) {
+                for (int j = h4; j <= h44; ++j) {
+                    Color c = new Color(img.getRGB((int) i, (int) j));
+                    r = c.getRed();
+                    g = c.getGreen();
+                    b = c.getBlue();
+
+                    tr += r;
+                    tg += g;
+                    tb += b;
+                    counter++;
+                }
+            }
+            tr = tr / counter;
+            tg = tg / counter;
+            tb = tb / counter;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void formatIng() {
+        if ("Januari".equals(tglUS)) {
+            Tgl_ing = "January";
+        } else if ("Februari".equals(tglUS)) {
+            Tgl_ing = "February";
+        } else if ("Maret".equals(tglUS)) {
+            Tgl_ing = "March";
+        } else if ("April".equals(tglUS)) {
+            Tgl_ing = "April";
+        } else if ("Mei".equals(tglUS)) {
+            Tgl_ing = "Mey";
+        } else if ("Juni".equals(tglUS)) {
+            Tgl_ing = "June";
+        } else if ("Juli".equals(tglUS)) {
+            Tgl_ing = "July";
+        } else if ("Agustus".equals(tglUS)) {
+            Tgl_ing = "August";
+        } else if ("September".equals(tglUS)) {
+            Tgl_ing = "September";
+        } else if ("Oktober".equals(tglUS)) {
+            Tgl_ing = "October";
+        } else if ("November".equals(tglUS)) {
+            Tgl_ing = "November";
+        } else if ("Desember".equals(tglUS)) {
+            Tgl_ing = "December";
+        } else {
+            Tgl_ing = tglUS;
+        }
+    }
+}
